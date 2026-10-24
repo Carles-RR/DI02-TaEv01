@@ -109,7 +109,7 @@ export class HomePage {
             try {
               await this.restauranteService.delete(r.id);
               this.restaurantesCargados.update(lista => lista.filter(x => x.id !== r.id));
-              this.mostrarToast(`${r.documentName} eliminado`, 'success');
+              this.mostrarToastConDeshacer(`${r.documentName} eliminado`, () => this.deshacerBorrado(r));
             } catch {
               this.mostrarToast('Error al borrar el restaurante', 'danger');
             }
@@ -119,7 +119,16 @@ export class HomePage {
     });
     await alert.present();
   }
-
+  
+  // Recupero el restaurante borrado
+  private async deshacerBorrado(r: Restaurante) {
+    try {
+      await this.restauranteService.add(r);
+      await this.cargarDatos();
+    } catch {
+      this.mostrarToast('Error al deshacer el borrado. Revisa tu conexión.', 'danger');
+    }
+  }
   // Abre el modal para añadir un restaurante nuevo
   async abrirModalAnadir() {
     const modal = await this.modalCtrl.create({
@@ -144,6 +153,19 @@ export class HomePage {
     await toast.present();
   }
 
+  private async mostrarToastConDeshacer(mensaje: string, onDeshacer: () => Promise<void>) {
+    const toast = await this.toastCtrl.create({
+      message: mensaje,
+      duration: 6000,          // 6 s para dar tiempo a reaccionar
+      color: 'success',
+      position: 'bottom',
+      buttons: [
+        { text: 'Deshacer', role: 'undo', handler: () => { onDeshacer(); } },
+        { text: 'X', role: 'cancel' }
+      ]
+    });
+    await toast.present();
+  }
 
   // ############################### REGION FILTROS (estado general) ###############################
 
