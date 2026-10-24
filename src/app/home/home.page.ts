@@ -31,6 +31,9 @@ export class HomePage {
   // true durante la carga de datos
   cargando = signal(false);
 
+  // H1 - Visibilidad del estado de  carga
+  estadoCarga = computed(() => this.cargando() ? 'Cargando restaurantes...' : '');
+
   // true durante la importación del JSON a Firebase
   importando = signal(false);
 
@@ -226,6 +229,19 @@ export class HomePage {
 
   // ############################### REGION RESULTADOS ###############################
 
+  // H7 - Ordenación por columna
+  sortColumna = signal<string>('');
+  sortDireccion = signal<'asc' | 'desc'>('asc');
+
+  cambiarOrden(columna: string) {
+    if (this.sortColumna() === columna) {
+      this.sortDireccion.update(d => d === 'asc' ? 'desc' : 'asc');
+    } else {
+      this.sortColumna.set(columna);
+      this.sortDireccion.set('asc');
+    }
+  }
+
   // Lista filtrada de restaurantes según todos los filtros activos
   restaurantesFiltrados = computed(() => {
     let lista = this.restaurantesCargados();
@@ -243,6 +259,24 @@ export class HomePage {
     const seleccionadas = this.localidadesSeleccionadas();
     if (seleccionadas.length > 0) {
       lista = lista.filter(r => seleccionadas.includes(r.locality?.trim() || ''));
+    }
+
+    const columna = this.sortColumna();
+    if (columna) {
+      const factor = this.sortDireccion() === 'asc' ? 1 : -1;
+      // Las columnas de premios se comparan como números; el resto como texto
+      const esNumerica = columna === 'michelinStar' || columna === 'repsolSun';
+      // Copiamos la lista con [...lista] para no modificar la original al ordenar
+      lista = [...lista].sort((a, b) => {
+        const va = (a as any)[columna];
+        const vb = (b as any)[columna];
+        if (esNumerica) {
+          return (Number(va) || 0) - (Number(vb) || 0) === 0
+            ? 0
+            : ((Number(va) || 0) - (Number(vb) || 0)) * factor;
+        }
+        return String(va ?? '').localeCompare(String(vb ?? ''), 'es') * factor;
+      });
     }
 
     return lista;

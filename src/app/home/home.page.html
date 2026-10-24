@@ -122,6 +122,13 @@
       </ion-label>
     </ion-item>
   }
+  <!-- H1: spinner + texto mientras se cargan los datos -->
+  @if (cargando()) {
+    <div class="estado-carga">
+      <ion-spinner name="crescent"></ion-spinner>
+      <span>{{ estadoCarga() }}</span>
+    </div>
+  }
 
   <!-- Tabla de restaurantes -->
   @if (restaurantesFiltrados().length > 0) {
@@ -129,14 +136,51 @@
       <table class="restaurantes-table">
         <thead>
           <tr>
-            <th>Nombre</th>
-            <th>Localidad</th>
-            <th>Dirección</th>
-            <th>Teléfono</th>
-            <th>Territorio</th>
+            <th class="sortable" (click)="cambiarOrden('documentName')">
+              Nombre
+              @if (sortColumna() === 'documentName') {
+                <ion-icon [name]="sortDireccion() === 'asc' ? 'arrow-up' : 'arrow-down'"></ion-icon>
+              }
+            </th>
+            <th class="sortable" (click)="cambiarOrden('locality')">
+              Localidad
+              @if (sortColumna() === 'locality') {
+                <ion-icon [name]="sortDireccion() === 'asc' ? 'arrow-up' : 'arrow-down'"></ion-icon>
+              }
+            </th>
+            <th class="sortable" (click)="cambiarOrden('address')">
+              Dirección
+              @if (sortColumna() === 'address') {
+                <ion-icon [name]="sortDireccion() === 'asc' ? 'arrow-up' : 'arrow-down'"></ion-icon>
+              }
+            </th>
+            <th class="sortable" (click)="cambiarOrden('phone')">
+              Teléfono
+              @if (sortColumna() === 'phone') {
+                <ion-icon [name]="sortDireccion() === 'asc' ? 'arrow-up' : 'arrow-down'"></ion-icon>
+              }
+            </th>
+            <th class="sortable" (click)="cambiarOrden('territory')">
+              Territorio
+              @if (sortColumna() === 'territory') {
+                <ion-icon [name]="sortDireccion() === 'asc' ? 'arrow-up' : 'arrow-down'"></ion-icon>
+              }
+            </th>
+      
             <th>Web</th>
-            <th>Estrellas Michelin</th>
-            <th>Soles Repsol</th>
+
+            <th class="sortable" (click)="cambiarOrden('michelinStar')">
+              Estrellas Michelin
+              @if (sortColumna() === 'michelinStar') {
+                <ion-icon [name]="sortDireccion() === 'asc' ? 'arrow-up' : 'arrow-down'"></ion-icon>
+              }
+            </th>
+            <th class="sortable" (click)="cambiarOrden('repsolSun')">
+              Soles Repsol
+              @if (sortColumna() === 'repsolSun') {
+                <ion-icon [name]="sortDireccion() === 'asc' ? 'arrow-up' : 'arrow-down'"></ion-icon>
+              }
+            </th>
             <th>Borrar</th>
           </tr>
         </thead>

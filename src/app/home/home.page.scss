@@ -48,13 +48,18 @@
       background-color: #3880ff;
       color: #ffffff;
       border: 1px solid rgba(255, 255, 255, 0.4);
-    }
 
+      &.sortable {
+        cursor: pointer;
+        user-select: none;
+      }
+    }
+    
     tbody tr {
       transition: background 0.15s ease;
 
-      &:nth-child(even) { background-color: #f4f4f4; }
-      &:hover { background-color: #dce8ff; }
+      &:nth-child(even) { background-color: var(--ion-color-step-100, #2a2a2a); }
+      &:hover { background-color: var(--ion-color-step-200, #3a4a66); }
 
       td {
         padding: 10px 14px;
