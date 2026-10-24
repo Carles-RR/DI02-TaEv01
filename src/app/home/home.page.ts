@@ -4,6 +4,8 @@ import { Restaurante } from '../interface/restaurante';
 import { RestauranteService } from '../services/restaurante.service';
 import { AddRestauranteModalComponent } from '../components/add-restaurante-modal/add-restaurante-modal.component';
 import restaurantesJSON from '../../assets/datos/restaurantes.json';
+import { addIcons } from 'ionicons';
+import { star, sunny } from 'ionicons/icons';
 
 @Component({
   selector: 'app-home',
@@ -21,6 +23,11 @@ export class HomePage {
   private loadingCtrl = inject(LoadingController);
   private modalCtrl = inject(ModalController);
   private restauranteService = inject(RestauranteService);
+
+  constructor() {
+    // H2: registramos los iconos de Michelin (estrella) y Repsol (sol)
+    addIcons({ star, sunny });
+  }
 
   // Restaurantes leídos del JSON local (usados para la importación a Firebase)
   restaurantes: Restaurante[] = restaurantesJSON as Restaurante[];
@@ -109,12 +116,21 @@ export class HomePage {
               this.mostrarToast('No se puede borrar: el restaurante no tiene ID.', 'danger');
               return;
             }
+            const loading = await this.loadingCtrl.create({
+              message: 'Borrando restaurante...',
+              backdropDismiss: false
+            });
+            await loading.present();
             try {
+              await new Promise(res => setTimeout(res, 2000));
               await this.restauranteService.delete(r.id);
               this.restaurantesCargados.update(lista => lista.filter(x => x.id !== r.id));
               this.mostrarToastConDeshacer(`${r.documentName} eliminado`, () => this.deshacerBorrado(r));
             } catch {
               this.mostrarToast('Error al borrar el restaurante', 'danger');
+            }
+            finally{
+              await loading.dismiss();
             }
           }
         }
@@ -300,5 +316,8 @@ export class HomePage {
   // Devuelve el número de soles Repsol (0 si no tiene o el valor no es numérico)
   repsolSoles(r: Restaurante): number {
     return Number(r.repsolSun) || 0;
+  }
+  repetir (n:number): number[]{
+    return Array.from({ length: n}, (_,i) => i);
   }
 }

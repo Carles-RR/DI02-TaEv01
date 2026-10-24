@@ -24,6 +24,8 @@
 }
 
 :host ::ng-deep {
+  .icono-michelin { color: #e63946; }  
+  .icono-repsol { color: #f4a300; }    
 
   .table-wrapper {
     width: 100%;
@@ -99,7 +101,7 @@
     align-items: center;
     justify-content: center;
     color: #3880ff;
-    font-size: 20px;
+    font-size: 14px;
     transition: transform 0.15s ease, color 0.15s ease;
 
     &:hover {

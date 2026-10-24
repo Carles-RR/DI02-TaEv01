@@ -152,7 +152,7 @@
       }
     </div>
   }
-  
+
   <!-- Contador de restaurantes filtrados -->
   @if (hayDatos()) {
     <ion-item lines="none">
@@ -243,10 +243,22 @@
                 }
               </td>
               <td class="center">
-                {{ estrellasMichelin(r) > 0 ? estrellasMichelin(r) : '-' }}
+                @if (estrellasMichelin(r) > 0) {
+                  @for (i of repetir(estrellasMichelin(r)); track i) {
+                    <ion-icon name="star" class="icono-michelin"></ion-icon>
+                  }
+                } @else {
+                  -
+                }
               </td>
               <td class="center">
-                {{ repsolSoles(r) > 0 ? repsolSoles(r) : '-' }}
+                @if (repsolSoles(r) > 0) {
+                  @for (i of repetir(repsolSoles(r)); track i) {
+                    <ion-icon name="sunny" class="icono-repsol"></ion-icon>
+                  }
+                } @else {
+                  -
+                }
               </td>
               <td class="center">
                 <ion-button fill="clear" color="danger" size="small"
