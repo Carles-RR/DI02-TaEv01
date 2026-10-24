@@ -148,7 +148,7 @@ export class HomePage {
   private async mostrarToast(mensaje: string, color: 'success' | 'danger' | 'warning') {
     const toast = await this.toastCtrl.create({
       message: mensaje,
-      duration: 3000,
+      duration: color === 'success' ? 3000:0,
       color,
       position: 'bottom',
       buttons: [{ text: 'X', role: 'cancel' }]
@@ -207,6 +207,11 @@ export class HomePage {
     this.localidadesSeleccionadas.set(nuevasLocalidades);
   }
 
+  quitarTerritorio() {
+    if (this.localidadesSeleccionadas().length === 0) {
+      this.territorioSeleccionado.set('');
+    }
+  }
   // ############################### REGION LOCALIDADES ###############################
 
   localidadesSeleccionadas = signal<string[]>([]);
@@ -226,11 +231,14 @@ export class HomePage {
   onLocalidadesChange(value: string[]) {
     this.localidadesSeleccionadas.set(value);
   }
-
+  
+  quitarLocalidad(loc: string) {
+    this.localidadesSeleccionadas.update(lista => lista.filter(l => l !== loc));
+  }
   // ############################### REGION RESULTADOS ###############################
 
   // H7 - Ordenación por columna
-  sortColumna = signal<string>('');
+  sortColumna = signal<string>('documentName');
   sortDireccion = signal<'asc' | 'desc'>('asc');
 
   cambiarOrden(columna: string) {

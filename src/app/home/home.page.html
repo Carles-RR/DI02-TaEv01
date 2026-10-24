@@ -110,6 +110,49 @@
     </ion-row>
   </ion-grid>
 
+  @if(hayFiltrosActivos()){
+    <ion-button fill="clear" color="danger" size="small" (click)="limpiarTodosFiltros()">
+      <ion-icon slot="start" name="close-circle-outline"></ion-icon>
+      Limpiar todos los filtros
+    </ion-button>
+  }
+  <!-- H6: los filtros activos siempre son visibles como chips, aunque el usuario haga scroll -->
+  <!-- H8: los chips solo aparecen cuando hay filtros activos -->
+  @if (hayFiltrosActivos()) {
+    <div class="chips-filtros">
+
+      <!-- H4: mismo componente ion-chip y mismo icono (close-circle-outline) en todos los filtros -->
+      @if (textoBusqueda()) {
+        <ion-chip (click)="textoBusqueda.set('')" title="Quitar búsqueda">
+          <ion-label>Nombre: {{ textoBusqueda() }}</ion-label>
+          <ion-icon name="close-circle-outline"></ion-icon>
+        </ion-chip>
+      }
+
+      @if (territorioSeleccionado()) {
+        @if (localidadesSeleccionadas().length > 0) {
+          <!-- H3 + H5: territorio bloqueado mientras haya localidades, el tooltip explica por qué -->
+          <ion-chip title="Quita primero las localidades para poder quitar el territorio">
+            <ion-label>Territorio: {{ territorioSeleccionado() }}</ion-label>
+            <ion-icon name="lock-closed-outline"></ion-icon>
+          </ion-chip>
+        } @else {
+          <ion-chip (click)="quitarTerritorio()" title="Quitar territorio">
+            <ion-label>Territorio: {{ territorioSeleccionado() }}</ion-label>
+            <ion-icon name="close-circle-outline"></ion-icon>
+          </ion-chip>
+        }
+      }
+
+      @for (loc of localidadesSeleccionadas(); track loc) {
+        <ion-chip (click)="quitarLocalidad(loc)" title="Quitar {{ loc }}">
+          <ion-label>{{ loc }}</ion-label>
+          <ion-icon name="close-circle-outline"></ion-icon>
+        </ion-chip>
+      }
+    </div>
+  }
+  
   <!-- Contador de restaurantes filtrados -->
   @if (hayDatos()) {
     <ion-item lines="none">
