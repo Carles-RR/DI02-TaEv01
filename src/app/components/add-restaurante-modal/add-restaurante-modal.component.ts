@@ -21,7 +21,7 @@ export class AddRestauranteModalComponent {
 
   form = this.fb.nonNullable.group({
     documentName: ['', Validators.required],
-    territory:    ['', [Validators.required, Validators.pattern(/^(Bizkaia|Gipuzkoa|Araba\/Álava)$/)]],
+    territory:    ['', [Validators.required, Validators.pattern(/^(Araba\/Álava|Bizkaia|Gipuzkoa)$/)]],
     locality:     [''],
     address:      [''],
     phone:        [''],
