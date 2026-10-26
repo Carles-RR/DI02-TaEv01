@@ -21,13 +21,13 @@ export class AddRestauranteModalComponent {
 
   form = this.fb.nonNullable.group({
     documentName: ['', Validators.required],
-    territory:    ['', Validators.required],
+    territory:    ['', [Validators.required, Validators.pattern(/^(Bizkaia|Gipuzkoa|Araba\/Álava)$/)]],
     locality:     [''],
     address:      [''],
     phone:        [''],
     web:          [''],
-    michelinStar: ['0'],
-    repsolSun:    ['0'],
+    michelinStar: ['0', [Validators.min(0), Validators.max(3)]],
+    repsolSun:    ['0', [Validators.min(0), Validators.max(3)]],
   });
 
   cancelar() {
@@ -97,9 +97,10 @@ export class AddRestauranteModalComponent {
     } catch {
       const toast = await this.toastCtrl.create({
         message: 'Error al guardar el restaurante en Firebase',
-        duration: 3000,
+        duration: 0,
         color: 'danger',
         position: 'bottom',
+        buttons: [{ text: 'X', role: 'cancel' }],
       });
       await toast.present();
     } finally {

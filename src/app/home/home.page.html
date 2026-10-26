@@ -1,6 +1,8 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Guía de Restaurantes Euskadi</ion-title>
+    <!-- H1 + H5: los botones se deshabilitan (cargando/importando) para no lanzar dos operaciones a la vez -->
+    <!-- H6: cada botón tiene texto visible, icono y tooltip (title) para saber qué hace -->
     <ion-buttons slot="end">
       <ion-button
         (click)="abrirModalAnadir()"
@@ -13,6 +15,7 @@
         (click)="confirmarImportacion()"
         [disabled]="cargando() || importando()"
         title="Importar restaurantes del JSON local a Firebase">
+        <!-- H1: spinner dentro del botón mientras dura la importación -->
         @if (importando()) {
           <ion-spinner name="crescent" style="width:18px;height:18px;margin-right:6px;"></ion-spinner>
         }
@@ -22,6 +25,7 @@
         (click)="cargarDatos()"
         [disabled]="cargando() || importando()"
         title="Cargar restaurantes desde Firebase">
+        <!-- H1: spinner dentro del botón mientras se cargan los datos -->
         @if (cargando()) {
           <ion-spinner name="crescent" style="width:18px;height:18px;margin-right:6px;"></ion-spinner>
         }
@@ -33,7 +37,7 @@
 
 <ion-content class="ion-padding">
 
-  <!-- Añadir mensaje cuando no hay datos -->
+  <!-- H10 + H8: mensaje de ayuda inicial, solo visible mientras no hay datos -->
   @if (!hayDatos()) {
     <ion-item lines="none" color="light" style="border-radius: 8px;">
       <ion-label class="ion-text-wrap">
@@ -110,6 +114,8 @@
     </ion-row>
   </ion-grid>
 
+  <!-- H3: salida de emergencia para volver al estado inicial de los filtros -->
+  <!-- H8: el botón solo aparece cuando hay algún filtro activo -->
   @if(hayFiltrosActivos()){
     <ion-button fill="clear" color="danger" size="small" (click)="limpiarTodosFiltros()">
       <ion-icon slot="start" name="close-circle-outline"></ion-icon>
@@ -153,6 +159,7 @@
     </div>
   }
 
+  <!-- H6: el usuario ve cuántos resultados hay sin tener que contar filas -->
   <!-- Contador de restaurantes filtrados -->
   @if (hayDatos()) {
     <ion-item lines="none">
@@ -177,6 +184,8 @@
   @if (restaurantesFiltrados().length > 0) {
     <div class="table-wrapper">
       <table class="restaurantes-table">
+        <!-- H7: pulsar una cabecera ordena por esa columna (y la invierte al pulsar de nuevo) -->
+        <!-- H6: la flecha indica qué columna está ordenada y en qué dirección -->
         <thead>
           <tr>
             <th class="sortable" (click)="cambiarOrden('documentName')">
@@ -242,6 +251,7 @@
                   </a>
                 }
               </td>
+              <!-- H2: iconos de estrella (Michelin) y sol (Repsol), repetidos según el valor -->
               <td class="center">
                 @if (estrellasMichelin(r) > 0) {
                   @for (i of repetir(estrellasMichelin(r)); track i) {
@@ -261,6 +271,7 @@
                 }
               </td>
               <td class="center">
+                <!-- H5: el borrado pide confirmación y después se puede deshacer (H3) -->
                 <ion-button fill="clear" color="danger" size="small"
                   title="Borrar restaurante"
                   (click)="borrarRestaurante(r)">
@@ -273,6 +284,8 @@
       </table>
     </div>
   } @else {
+    <!-- H9: el mensaje incluye la solución directa (enlace "Limpiar filtros") -->
+    <!-- H8: solo aparece cuando los filtros han vaciado la tabla -->
     <!-- Mensaje cuando no hay restaurantes que coincidan con los filtros -->
     @if (hayDatos()) {
       <ion-item lines="none" color="warning" style="margin-top: 16px; border-radius: 8px;">

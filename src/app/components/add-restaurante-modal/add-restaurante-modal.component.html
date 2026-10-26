@@ -1,6 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Añadir Restaurante</ion-title>
+    <!-- H3: botón "Cancelar" para salir del modal si se abrió por error (se deshabilita mientras se guarda) -->
     <ion-buttons slot="end">
       <ion-button (click)="cancelar()" [disabled]="guardando()">Cancelar</ion-button>
     </ion-buttons>
@@ -8,6 +9,8 @@
 </ion-header>
 
 <ion-content class="ion-padding">
+  <!-- H4: todos los campos usan labelPlacement="stacked" para una apariencia uniforme -->
+  <!-- H10: placeholders orientativos con ejemplos reales (Ej: Agurain, 9XXXXXXXX, https://...) -->
   <form [formGroup]="form" (ngSubmit)="guardar()">
 
     <ion-list lines="full">
@@ -21,19 +24,24 @@
           formControlName="documentName">
         </ion-input>
       </ion-item>
+      <!-- H5 + H9: Validators.required; mensaje inline solo tras tocar el campo y dejarlo inválido -->
       @if (form.get('documentName')?.invalid && form.get('documentName')?.touched) {
         <ion-text color="danger" class="ion-padding-start">
           <small>El nombre es obligatorio</small>
         </ion-text>
       }
 
+      <!-- H5: el territorio es obligatorio (sin él, el restaurante no se puede filtrar) -->
       <!-- Territorio -->
       <ion-item>
         <ion-input
           label="Territorio *"
           labelPlacement="stacked"
-          placeholder="Ej: Bizkaia"
+          placeholder="Ej: Araba/Álava"
           formControlName="territory">
+          <ion-select-option value="Araba/Álava">Araba/Álava</ion-select-option>
+          <ion-select-option value="Bizkaia">Bizkaia</ion-select-option>
+          <ion-select-option value="Gipuzkoa">Gipuzkoa</ion-select-option>          
         </ion-input>
       </ion-item>
       @if (form.get('territory')?.invalid && form.get('territory')?.touched) {
@@ -47,7 +55,7 @@
         <ion-input
           label="Localidad"
           labelPlacement="stacked"
-          placeholder="Ej: Bilbao"
+          placeholder="Ej: Agurain"
           formControlName="locality">
         </ion-input>
       </ion-item>
@@ -84,6 +92,7 @@
         </ion-input>
       </ion-item>
 
+      <!-- H5: el rango válido es 0-3 (Validators.min/max en el .ts) -->
       <!-- Estrellas Michelin -->
       <ion-item>
         <ion-input
@@ -95,6 +104,11 @@
           formControlName="michelinStar">
         </ion-input>
       </ion-item>
+      @if (form.get('michelinStar')?.invalid && form.get('michelinStar')?.touched) {
+        <ion-text color="danger" class="ion-padding-start">
+          <small>Introduce un número entre 0 y 3</small>
+        </ion-text>
+      }
 
       <!-- Soles Repsol -->
       <ion-item>
@@ -107,9 +121,15 @@
           formControlName="repsolSun">
         </ion-input>
       </ion-item>
-
+      @if (form.get('repsolSun')?.invalid && form.get('repsolSun')?.touched) {
+        <ion-text color="danger" class="ion-padding-start">
+          <small>Introduce un número entre 0 y 3</small>
+        </ion-text>
+      }
     </ion-list>
 
+    <!-- H5: el botón queda deshabilitado mientras el formulario no sea válido -->
+    <!-- H1: el botón cambia a "Guardando..." con spinner mientras se guarda -->
     <div class="ion-padding-top">
       <ion-button expand="block" type="submit" [disabled]="form.invalid || guardando()">
         @if (guardando()) {
