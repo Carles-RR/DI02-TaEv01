@@ -51,11 +51,16 @@ export class HomePage {
   async cargarDatos() {
     this.cargando.set(true);
     try {
+       // H9: si no hay conexión avisamos al instante, sin esperar a Firebase
+      if (!navigator.onLine) {
+        throw new Error('offline');
+      }
+
       const datos = await this.restauranteService.getAll();
       this.restaurantesCargados.set(datos);
       this.mostrarToast(`${datos.length} restaurantes cargados`, 'success');
     } catch {
-      this.mostrarToast('Error al cargar los datos desde Firebase', 'danger');
+      this.mostrarToast('Error al cargar los datos desde Firebase. Comprueba tu conexión a internet', 'danger');
     } finally {
       this.cargando.set(false);
     }
@@ -175,7 +180,7 @@ export class HomePage {
   private async mostrarToastConDeshacer(mensaje: string, onDeshacer: () => Promise<void>) {
     const toast = await this.toastCtrl.create({
       message: mensaje,
-      duration: 6000,          // 6 s para dar tiempo a reaccionar
+      duration: 6000,   
       color: 'success',
       position: 'bottom',
       buttons: [
